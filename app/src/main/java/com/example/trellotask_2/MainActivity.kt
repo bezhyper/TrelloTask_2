@@ -4,6 +4,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.trellotask_2.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,10 +25,14 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(bindingClass.root)
 
-        bindingClass.buttonToSecond.setOnClickListener {
-            val intent = Intent(this@MainActivity, SecondActivity::class.java)
-            startActivity(intent)
-        }
+//        val retrofit = Retrofit.Builder()
+//            .baseUrl("http://10.0.2.2:8000")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//
+//        val dataApi = retrofit.create(DataApi::class.java)
+
+
 
         bindingClass.buttonToThird.setOnClickListener {
             val intent = Intent(this@MainActivity, ThirdActivity::class.java)
@@ -31,10 +40,29 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        /*var jenyaQuestion = Data("Бездарь","Лесби","Сосед","Безмен","jenya")
-        val img: String = jenyaQuestion.image
-        bindingClass.imageView.setImageResource(R.drawable.jenya)*/
+//        bindingClass.buttonGetData.setOnClickListener {
+//
+//            CoroutineScope(Dispatchers.IO).launch {
+//
+////                dataApi.postCompletedTask(8,88)
+//
+//
+//                val exercise = dataApi.getRandomTask(3)
+//
+//                runOnUiThread {
+//
+//                    bindingClass.textTest.text = exercise.toString()
+//
+//
+//                }
+//
+//
+//            }
+
+        }
 
 
     }
-}
+
+
+

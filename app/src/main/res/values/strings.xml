@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">TrelloTask_2</string>
+    <string name="app_name">Study Italian 2023</string>
+    <string name="buttonToThird">ПРОПУСК В ПРЕДЛОЖЕНИИ</string>
+    <string name="textOnStart">Итальянский для фанатов Мусолини</string>
 </resources>

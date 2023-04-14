@@ -1,23 +1,31 @@
 package com.example.trellotask_2.room.entities
 
 import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+
+@Entity(tableName = "layout")
 class ExerciseDataEntityLayout(
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "count")
+    val count: Int? = null,
+
     @ColumnInfo(name = "b1")
-    var b1: String,
+    val b1: String? = null,
 
     @ColumnInfo(name = "b2")
-    var b2: String,
+    val b2: String? = null,
 
     @ColumnInfo(name = "b3")
-    var b3: String,
+    val b3: String? = null,
 
     @ColumnInfo(name = "b4")
-    var b4: String,
+    val b4: String? = null,
 
     @ColumnInfo(name = "currentCount")
-    var currentCount: Int,
-
+    val currentCount: Int? = null,
 
     @ColumnInfo(name = "chosen_answer")
     val chosen_answer: String? = null,

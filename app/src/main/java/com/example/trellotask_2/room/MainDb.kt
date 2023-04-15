@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.trellotask_2.room.entities.ExerciseDataEntityLayout
 import com.example.trellotask_2.room.entities.ExerciseDataEntityRoom
 
-@Database(entities = [ExerciseDataEntityRoom::class,ExerciseDataEntityLayout::class], version = 3)
+@Database(entities = [ExerciseDataEntityRoom::class,ExerciseDataEntityLayout::class], version = 6)
 abstract class MainDb : RoomDatabase() {
 
 

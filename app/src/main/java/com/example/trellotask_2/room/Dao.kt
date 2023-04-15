@@ -30,21 +30,24 @@ interface Dao {
     @Query("SELECT * FROM exercises  WHERE count = :i")
     fun getPrevExercise(i: Int): ExerciseDataInTuple
 
-//    @Query("SELECT count FROM exercises")
-//    fun getExerciseCount(): Int
 
+    @Query("SELECT * FROM layout  WHERE count = :i")
+    fun getExerciseLayout(i: Int): ExerciseDataEntityLayout
 
 
 
     @Update(entity = ExerciseDataEntityRoom::class)
-    fun updateAnswerData(updateData: UpdateExerciseDataInTuple)
+    fun updateAnswerDataRoom(updateData: UpdateExerciseDataInTuple)
 
+    @Update(entity = ExerciseDataEntityLayout::class)
+    fun updateAnswerDataLayout(updateData: UpdateExerciseDataInTuple)
 
-    @Query("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'exercises'")
-    fun resetPrimaryKeyEntityRoom()
 
     @Update
     fun updateLayoutData(data: ExerciseDataEntityLayout)
+
+    @Query("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'exercises'")
+    fun resetPrimaryKeyEntityRoom()
 
     @Query("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'layout'")
     fun resetPrimaryKeyEntityLayout()
@@ -52,8 +55,6 @@ interface Dao {
     @Insert
     fun insertExerciseDataLayout(data: ExerciseDataEntityLayout)
 
-//    @Query("UPDATE layout SET seq = 0 WHERE name = 'layout'")
-//
 
 
     @Query("DELETE FROM exercises")

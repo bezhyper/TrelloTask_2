@@ -13,6 +13,7 @@ import com.example.trellotask_2.room.MainDb
 
 import com.example.trellotask_2.databinding.ActivityThirdBinding
 import com.example.trellotask_2.room.entities.ExerciseDataEntityLayout
+import com.example.trellotask_2.room.entities.ExerciseDataEntityRoom
 import com.example.trellotask_2.room.entities.UpdateExerciseDataInTuple
 import com.example.trellotask_2.utils.Constants.Companion.BASE_URL
 import kotlinx.coroutines.*
@@ -35,25 +36,14 @@ class ThirdActivity : AppCompatActivity() {
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-//
-//
+
         val dataApi = retrofit.create(DataApi::class.java)
-//
+
         val db = MainDb.getDb((this)) // создание базы данных
 
         var i = 1
 
         var currentButton: Button? = null
-
-//        db.getDao().getExerciseWithFlow().asLiveData().observe(this) {
-//            if(it.count == 1 || it.count == null){
-//                bindingClass.buttonPrevEx.visibility = View.GONE
-//            }
-//            else{
-//                bindingClass.buttonPrevEx.visibility = View.VISIBLE
-//            }
-//
-//        }
 
 
 
@@ -61,9 +51,7 @@ class ThirdActivity : AppCompatActivity() {
 
         layOutExercise(i, db)
 
-        fillOutLayoutDatabase(currentButton, db)
-
-
+        fillOutLayoutDatabase(db)
 
 
 
@@ -77,15 +65,24 @@ class ThirdActivity : AppCompatActivity() {
 
 
                 db.getDao().resetPrimaryKeyEntityRoom()
-                db.getDao().resetPrimaryKeyEntityLayout() //    ?
+
             }
 
+            CoroutineScope(Dispatchers.IO).launch {
+                db.getDao().resetPrimaryKeyEntityLayout()
+
+            }
 
 
             CoroutineScope(Dispatchers.IO).launch {
                 db.getDao().deleteAllInExercises()
+
+            }
+            CoroutineScope(Dispatchers.IO).launch {
                 db.getDao().deleteAllInLayout()
             }
+
+
             // ПЕРЕНЕСТИ В onDestroy ?!
         }
 
@@ -103,8 +100,6 @@ class ThirdActivity : AppCompatActivity() {
             checkAnswerAndDisplay(currentButton!!, db, dataApi)
 
 
-
-
         }
 
 
@@ -116,7 +111,6 @@ class ThirdActivity : AppCompatActivity() {
             fillInGapInSentence(db)
 
             checkAnswerAndDisplay(currentButton!!, db, dataApi)
-
 
         }
 
@@ -130,7 +124,6 @@ class ThirdActivity : AppCompatActivity() {
 
             checkAnswerAndDisplay(currentButton!!, db, dataApi)
 
-
         }
 
 
@@ -142,8 +135,6 @@ class ThirdActivity : AppCompatActivity() {
             fillInGapInSentence(db)
 
             checkAnswerAndDisplay(currentButton!!, db, dataApi)
-
-
 
         }
 
@@ -162,48 +153,32 @@ class ThirdActivity : AppCompatActivity() {
 
             layOutExercise(i, db)
 
-            fillOutLayoutDatabase(currentButton, db)
+            fillOutLayoutDatabase(db)
 
             showPrevExButton()
-
-
-//            if (currentButton != null) {
-//
-//                bindingClass.button11.isEnabled = true
-//                bindingClass.button22.isEnabled = true
-//                bindingClass.button33.isEnabled = true
-//                bindingClass.button44.isEnabled = true
-//
-//                if (checkArrayIndexOutOfBoundsException(examplesList, index)) {
-//                    currentButton!!.setBackgroundColor(Color.WHITE)
-//                }
-//
-//
-//
-//
-//
-//
-//
-//                if (checkArrayIndexOutOfBoundsException(examplesList, index)) {
-//                    index++
-//                    layOutExercise(examplesList, index)
-//                } else {
-//                    bindingClass.nextExButton.isEnabled = false
-//                    bindingClass.answerCheck.text = "Задания закончились!"
-//                    lockAllButtons()
-//
-//                }
-//            }
 
 
         }
 
 
         bindingClass.buttonPrevEx.setOnClickListener {
+
+            unlockButtonsAndClearColor(currentButton) // +
+
+
+
+
+
+
+            clearAnswerCheckTextView()// +
+
             if (i != 1) {
                 i--
 
-                layOutPrevExercise(i, db)
+                if (i == 1)
+                    hidePrevExButton() //+
+
+                layOutPrevExercise(i, db) // ?
             }
 
         }
@@ -211,40 +186,30 @@ class ThirdActivity : AppCompatActivity() {
 
     }
 
-    private fun fillOutLayoutDatabase(currentButton: Button?, db: MainDb) {
+    private fun hidePrevExButton() {
+        bindingClass.buttonPrevEx.visibility = View.GONE
+    }
+
+    private fun fillOutLayoutDatabase(db: MainDb) {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            delay(1000) // может стоит не через дилэй а через авэйт???!!!
+//            delay(500) // может стоит не через дилэй а через авэйт???!!!
 
-            if (currentButton != null) {
 
-                db.getDao()
-                    .insertExerciseDataLayout(
-                        ExerciseDataEntityLayout(
-                            b1 = bindingClass.button11.text as String?,
-                            b2 = bindingClass.button22.text as String?,
-                            b3 = bindingClass.button33.text as String?,
-                            b4 = bindingClass.button44.text as String?,
-                            chosen_answer = currentButton.text.toString()
-                        )
+            delay(600)
+            // Думаю, по крайней мере значение можно будет уменьшить после переноса инициализации инстанций
+            db.getDao()
+                .insertExerciseDataLayout(
+                    ExerciseDataEntityLayout(
+                        sentens = bindingClass.textSentence.text as String?,
+                        b1 = bindingClass.button11.text as String?,
+                        b2 = bindingClass.button22.text as String?,
+                        b3 = bindingClass.button33.text as String?,
+                        b4 = bindingClass.button44.text as String?,
                     )
-            }else{
+                )
 
-                db.getDao()
-                    .insertExerciseDataLayout(
-                        ExerciseDataEntityLayout(
-                            b1 = bindingClass.button11.text as String?,
-                            b2 = bindingClass.button22.text as String?,
-                            b3 = bindingClass.button33.text as String?,
-                            b4 = bindingClass.button44.text as String?,
-
-                        )
-                    )
-
-
-
-            }
         }
 
     }
@@ -263,10 +228,9 @@ class ThirdActivity : AppCompatActivity() {
 
             db.getDao().insertExerciseData(exerciseDataRoom)
 
-
-
-
         }
+
+
     }
 
 
@@ -278,9 +242,9 @@ class ThirdActivity : AppCompatActivity() {
     private fun fillInGapInSentence(db: MainDb) {
         CoroutineScope(Dispatchers.IO).launch {
             val data = db.getDao().getExerciseWithoutFlow()
-            runOnUiThread {
 
-                val fullSentence = data.sentens.replace("<пропуск>", data.correct)
+            val fullSentence = data.sentens.replace("<пропуск>", data.correct)
+            runOnUiThread {
 
                 bindingClass.textSentence.text = fullSentence
             }
@@ -295,8 +259,11 @@ class ThirdActivity : AppCompatActivity() {
             bindingClass.button22.isEnabled = true
             bindingClass.button33.isEnabled = true
             bindingClass.button44.isEnabled = true
-//                currentButton.setBackgroundResource(android.R.drawable.btn_default) - ЦВЕТ из-за изменения темы теперь не подходит
-            currentButton.setBackgroundColor(WHITE)
+
+            bindingClass.button11.setBackgroundColor(WHITE)
+            bindingClass.button22.setBackgroundColor(WHITE)
+            bindingClass.button33.setBackgroundColor(WHITE)
+            bindingClass.button44.setBackgroundColor(WHITE)
         }
 
 
@@ -305,7 +272,7 @@ class ThirdActivity : AppCompatActivity() {
 
     private fun layOutExercise(i: Int, db: MainDb) {
 
-
+//        db.getDao().getExerciseWithFlow().asLiveData().observe(layOutExercise(i,db))
         db.getDao().getExerciseWithFlow().asLiveData().observe(this) { data ->
 
             if ((data != null) && (data.chosen_answer == null) && (data.is_answer_correct == null)) {
@@ -364,60 +331,69 @@ class ThirdActivity : AppCompatActivity() {
 
     private fun layOutPrevExercise(i: Int, db: MainDb) {
 
-//        var currentCount =  CoroutineScope(Dispatchers.IO).launch{}
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            val data = db.getDao().getPrevExercise(i)
+            val data = db.getDao().getExerciseLayout(i)
 
 
-            val fullSentence = data.sentens.replace("<пропуск>", "______")
-
-            bindingClass.textSentence.text = fullSentence
 
 
-            val answersList = mutableListOf(
-                data.correct,
-                data.wrong_1,
-                data.wrong_2,
-                data.wrong_3
-            )
+            runOnUiThread {
+
+//                fillInGapInPrevSentence(i, db)
+//                fillInGapInSentence(db)
+
+                bindingClass.button11.text = data.b1
 
 
-            var n = answersList.size
-
-            var randomNumber = Random.nextInt(0, n)
+                bindingClass.button22.text = data.b2
 
 
-            bindingClass.button11.text = answersList[randomNumber]
-
-            n -= 1
-            answersList.removeAt(randomNumber)
+                bindingClass.button33.text = data.b3
 
 
-            randomNumber = Random.nextInt(0, n)
+                bindingClass.button44.text = data.b4
 
-            bindingClass.button22.text = answersList[randomNumber]
+                if ((data.is_answer_correct == 1) && (data.chosen_answer != null)) {
+                    when (data.chosen_answer) {
+                        bindingClass.button11.text -> bindingClass.button11.setBackgroundColor(GREEN)
+                        bindingClass.button22.text -> bindingClass.button22.setBackgroundColor(GREEN)
+                        bindingClass.button33.text -> bindingClass.button33.setBackgroundColor(GREEN)
+                        bindingClass.button44.text -> bindingClass.button44.setBackgroundColor(GREEN)
+                    }
+                } else {
+                    when (data.chosen_answer) {
+                        bindingClass.button11.text -> bindingClass.button11.setBackgroundColor(RED)
+                        bindingClass.button22.text -> bindingClass.button22.setBackgroundColor(RED)
+                        bindingClass.button33.text -> bindingClass.button33.setBackgroundColor(RED)
+                        bindingClass.button44.text -> bindingClass.button44.setBackgroundColor(RED)
 
-            n -= 1
-            answersList.removeAt(randomNumber)
+                    }
 
+                    if ((data.is_answer_correct == 1) && (data.chosen_answer != null))
+                        bindingClass.answerCheck.text = "Вы ответили верно!"
+                    else if ((data.is_answer_correct == 0) && (data.chosen_answer != null))
+                        bindingClass.answerCheck.text = "Вы ответили неверно!"
+                }
+            }
 
-            randomNumber = Random.nextInt(0, n)
-
-            bindingClass.button33.text = answersList[randomNumber]
-
-            n -= 1
-
-            answersList.removeAt(randomNumber)
-
-
-            bindingClass.button44.text = answersList[0]
         }
-
-
     }
 
+    private fun fillInGapInPrevSentence(i: Int, db: MainDb) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val data = db.getDao().getPrevExercise(i)
+
+            val fullSentence = data.sentens.replace("<пропуск>", data.correct)
+            runOnUiThread {
+
+                bindingClass.textSentence.text = fullSentence
+            }
+
+        }
+
+    }
 
     private fun checkAnswerAndDisplay(currentButton: Button, db: MainDb, dataApi: DataApi) {
 
@@ -442,7 +418,9 @@ class ThirdActivity : AppCompatActivity() {
                             "${currentButton.text}",
                             is_answer_correct = 1
                         )
-                        db.getDao().updateAnswerData(updatedData)
+                        db.getDao().updateAnswerDataRoom(updatedData)
+
+                        db.getDao().updateAnswerDataLayout(updatedData)
 
 
                     }
@@ -463,13 +441,18 @@ class ThirdActivity : AppCompatActivity() {
                             "${currentButton.text}",
                             is_answer_correct = 0
                         )
-                        db.getDao().updateAnswerData(updatedData)
+                        db.getDao().updateAnswerDataRoom(updatedData)
+
+                        db.getDao().updateAnswerDataLayout(updatedData)
+
                     }
                 }
 
             }
 
+
         }
+
 
     }
 

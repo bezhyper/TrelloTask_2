@@ -5,4 +5,6 @@
     <string name="buttonFromThirdToMain">В главное меню</string>
     <string name="buttonNextEx">Следующее задание</string>
     <string name="buttonPrevEx">←</string>
+    <string name="ImageDescription">Welcome!</string>
+    <string name="ExitButton">Выход</string>
 </resources>

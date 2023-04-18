@@ -34,6 +34,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        bindingClass.buttonExit.setOnClickListener {
+            finishAffinity()
+        }
+
 
 //        bindingClass.buttonGetData.setOnClickListener {
 //
